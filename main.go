@@ -28,6 +28,8 @@ func wwwRedirect(w http.ResponseWriter, r *http.Request) {
 		log.Println("redirecting:", "https://www."+host)
 		http.Redirect(w, r, "https://www."+host, http.StatusPermanentRedirect)
 	}
+
+	http.NotFound(w, r)
 }
 
 func main() {
