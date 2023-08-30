@@ -1,19 +1,27 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
-	"golang.org/x/exp/slices"
+	_ "embed"
 )
 
-func isWhiteListed(host string) bool {
-	env := os.Getenv("WHITELISTED_DOMAINS")
-	domains := strings.Split(env, ",")
+//go:embed hosts.json
+var hosts []byte
 
-	return slices.Contains(domains, host)
+var hostmap = loadHosts()
+
+func loadHosts() map[string]string {
+	var hostmap map[string]string
+	err := json.Unmarshal(hosts, &hostmap)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return hostmap
 }
 
 // determines the domain name requested and returns the www redirect
@@ -22,11 +30,13 @@ func wwwRedirect(w http.ResponseWriter, r *http.Request) {
 	host := r.Host
 
 	log.Println(host)
+
 	// check if the host is www
-	if isWhiteListed(host) && !strings.HasPrefix(host, "www") {
+	rd := hostmap[host]
+	if rd != "" && !strings.HasPrefix(host, "www") {
 		// redirect to www
-		log.Println("redirecting:", "https://www."+host)
-		http.Redirect(w, r, "https://www."+host, http.StatusPermanentRedirect)
+		log.Println("redirecting:", rd)
+		http.Redirect(w, r, rd, http.StatusPermanentRedirect)
 	}
 
 	http.NotFound(w, r)

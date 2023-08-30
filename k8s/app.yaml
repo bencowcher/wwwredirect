@@ -19,9 +19,6 @@ spec:
         - name: www-redirect-pod
           image: bencowcher/wwwredirect:latest
           imagePullPolicy: Always
-          env:
-           - name: WHITELISTED_DOMAINS
-             value: "lightningbet.com.au,vinbet.com.au"
           ports:
             - name: http
               containerPort: 80
