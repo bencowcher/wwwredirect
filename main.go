@@ -37,6 +37,7 @@ func wwwRedirect(w http.ResponseWriter, r *http.Request) {
 		// redirect to www
 		log.Println("redirecting:", rd)
 		http.Redirect(w, r, rd, http.StatusPermanentRedirect)
+		return
 	}
 
 	http.NotFound(w, r)
