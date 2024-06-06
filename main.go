@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	_ "embed"
 
@@ -56,9 +55,8 @@ func wwwRedirect(w http.ResponseWriter, r *http.Request) {
 
 	log.Println(host)
 
-	// check if the host is www
 	rd := hostmap[host]
-	if rd != "" && !strings.HasPrefix(host, "www") {
+	if rd != "" {
 		// redirect to www
 		log.Println("redirecting:", rd)
 		http.Redirect(w, r, rd, http.StatusPermanentRedirect)
