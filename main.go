@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	_ "embed"
@@ -58,6 +59,12 @@ func wwwRedirect(w http.ResponseWriter, r *http.Request) {
 	rd := hostmap[host]
 	if rd != "" {
 		// redirect to www
+		loc, err := url.JoinPath(rd, r.URL.Path)
+		if err != nil {
+			log.Println("error joining path:", err)
+		} else {
+			rd = loc
+		}
 		log.Println("redirecting:", rd)
 		http.Redirect(w, r, rd, http.StatusPermanentRedirect)
 		return
