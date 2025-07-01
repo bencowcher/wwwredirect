@@ -66,7 +66,11 @@ func wwwRedirect(w http.ResponseWriter, r *http.Request) {
 			rd = loc
 		}
 
-		log.Println("redirecting:", rd)
+		if r.URL.RawQuery != "" {
+			rd += "?" + r.URL.RawQuery
+		}
+
+		log.Printf("redirecting from %s to %s", r.URL.String(), rd)
 		http.Redirect(w, r, rd, http.StatusPermanentRedirect)
 		return
 	}
